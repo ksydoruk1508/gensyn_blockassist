@@ -105,17 +105,12 @@ Takes about **1 hour**.
 <img width="1470" height="803" alt="image" src="https://github.com/user-attachments/assets/1c4d13b5-dd7c-49ff-8c38-00da8bfab491" />
 ---
 
-### 15. Upload Complete
-Check Hugging Face model URL.
-
----
-
-### 16. Check Your Model
+### 15. Check Your Model
 Go to [Hugging Face](https://huggingface.co/).
 
 ---
 
-### 17. Get Role in Discord
+### 16. Get Role in Discord
 Open `gensyn.json` for `eoa`, `trainingId`, and `heid`.
 
 ---
@@ -234,17 +229,12 @@ wget -q -O blockassist.sh https://raw.githubusercontent.com/ksydoruk1508/gensyn_
 
 ---
 
-### 15. Завершение загрузки
-Проверьте ссылку модели.
-
----
-
-### 16. Проверьте модель
+### 15. Проверьте модель
 [Hugging Face](https://huggingface.co/).
 
 ---
 
-### 17. Получите роль в Discord
+### 16. Получите роль в Discord
 Откройте `gensyn.json` → `eoa`, `trainingId`, `heid`.
 
 ---
