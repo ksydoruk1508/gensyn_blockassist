@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Gensyn BlockAssist — unified menu (RU/EN)
 # 1) Install/Configure VNC on server
-# 2) Install Block Assist (inside VNC)  [pyenv global 3.10, default: Chrome]
+# 2) Install Block Assist (inside VNC)  [pyenv global 3.10, Chrome only]
 # 3) Run Block Assist (inside VNC)
 # 4) Show IP and VNC port(s)
 # 5) Stop VNC server(s)
@@ -131,22 +131,23 @@ EOF
   echo -e "${LINE}"
 }
 
-# ========= 2) Install Block Assist inside VNC (pyenv global, DEFAULT: Chrome) =========
+# ========= 2) Install Block Assist inside VNC (pyenv global, Chrome only) =========
 install_blockassist(){
   printf "%b\n" "${MAGENTA}${BOLD}▌ Установка Block Assist (внутри VNC)${RESET}"
   printf "%b\n" "${MAGENTA}▌ Install Block Assist (inside VNC)${RESET}"
   printf "%b\n" "${LINE}"
 
   with_sudo apt-get update -y
+  # утилиты для XDG и .desktop
+  with_sudo apt-get install -y xdg-utils desktop-file-utils
 
-  # --- Browser: default Chrome (as requested). Set BROWSER=firefox to change.
-  BROWSER="${BROWSER:-chrome}"
-  if [ "$BROWSER" = "chrome" ]; then
-    echo -e "${CYAN}[*] Installing Google Chrome...${RESET}"
-    wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -O /tmp/chrome.deb
-    with_sudo apt-get install -y /tmp/chrome.deb || with_sudo apt-get -y -f install
-    # VNC-friendly wrapper + desktop shortcut
-    with_sudo tee /usr/local/bin/google-chrome-vnc >/dev/null <<'SH'
+  # --- Browser: always install Google Chrome (VNC-friendly)
+  echo -e "${CYAN}[*] Installing Google Chrome...${RESET}"
+  wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -O /tmp/chrome.deb
+  with_sudo apt-get install -y /tmp/chrome.deb || with_sudo apt-get -y -f install
+
+  # VNC-friendly wrapper (+флаги для работы под root/VNC)
+  with_sudo tee /usr/local/bin/google-chrome-vnc >/dev/null <<'SH'
 #!/usr/bin/env bash
 set -e
 BIN="$(command -v google-chrome-stable || command -v google-chrome || echo /usr/bin/google-chrome-stable)"
@@ -155,9 +156,11 @@ ARGS=(--no-sandbox --disable-dev-shm-usage --no-first-run --no-default-browser-c
       --password-store=basic --user-data-dir="${PROFILE}" --use-gl=desktop)
 "$BIN" "${ARGS[@]}" "$@" || "$BIN" "${ARGS[@]}" --use-gl=swiftshader "$@"
 SH
-    with_sudo chmod +x /usr/local/bin/google-chrome-vnc
-    mkdir -p "$HOME/Desktop" "$HOME/.local/share/applications"
-    cat > "$HOME/Desktop/google-chrome.desktop" <<'EOF'
+  with_sudo chmod +x /usr/local/bin/google-chrome-vnc
+
+  # Ярлык на рабочий стол (опционально)
+  mkdir -p "$HOME/Desktop" "$HOME/.local/share/applications"
+  cat > "$HOME/Desktop/google-chrome.desktop" <<'EOF'
 [Desktop Entry]
 Name=Google Chrome (VNC)
 Comment=Chromium-based browser (VNC-safe)
@@ -167,14 +170,54 @@ Type=Application
 Icon=google-chrome
 Categories=Network;WebBrowser;
 EOF
-    chmod +x "$HOME/Desktop/google-chrome.desktop" || true
-  else
-    echo -e "${CYAN}[*] Installing Firefox and desktop shortcut...${RESET}"
-    with_sudo apt-get install -y firefox
-    mkdir -p "$HOME/Desktop"
-    cp /usr/share/applications/firefox.desktop "$HOME/Desktop/" || true
-    chmod +x "$HOME/Desktop/firefox.desktop" || true
+  chmod +x "$HOME/Desktop/google-chrome.desktop" || true
+
+  # === Desktop-файл, который использует wrapper, и регистрация как default ===
+  with_sudo tee /usr/share/applications/google-chrome-vnc.desktop >/dev/null <<'EOF'
+[Desktop Entry]
+Name=Google Chrome (VNC-safe)
+Comment=Chromium-based browser (uses --no-sandbox etc.)
+Exec=/usr/local/bin/google-chrome-vnc %U
+Terminal=false
+Type=Application
+Icon=google-chrome
+Categories=Network;WebBrowser;
+StartupWMClass=Google-chrome
+MimeType=text/html;x-scheme-handler/http;x-scheme-handler/https;
+EOF
+  with_sudo update-desktop-database || true
+
+  # 1) system-wide: x-www-browser -> wrapper
+  with_sudo update-alternatives --install /usr/bin/x-www-browser x-www-browser /usr/local/bin/google-chrome-vnc 200
+  with_sudo update-alternatives --set x-www-browser /usr/local/bin/google-chrome-vnc || true
+
+  # 2) per-user XDG defaults
+  DESKTOP_ID="google-chrome-vnc.desktop"
+  if command -v xdg-settings >/dev/null 2>&1; then
+    xdg-settings set default-web-browser "$DESKTOP_ID" || true
   fi
+  if command -v xdg-mime >/dev/null 2>&1; then
+    xdg-mime default "$DESKTOP_ID" text/html
+    xdg-mime default "$DESKTOP_ID" x-scheme-handler/http
+    xdg-mime default "$DESKTOP_ID" x-scheme-handler/https
+  fi
+
+  # 3) продублировать в ~/.config/mimeapps.list
+  mkdir -p "$HOME/.config"
+  MIMERC="$HOME/.config/mimeapps.list"
+  grep -q "^\[Default Applications\]" "$MIMERC" 2>/dev/null || printf "[Default Applications]\n" >> "$MIMERC"
+  set_default() {
+    local key="$1" val="$2"
+    if grep -q "^${key}=" "$MIMERC" 2>/dev/null; then
+      sed -i "s|^${key}=.*|${key}=${val}|g" "$MIMERC"
+    else
+      printf "%s=%s\n" "$key" "$val" >> "$MIMERC"
+    fi
+  }
+  set_default "text/html" "${DESKTOP_ID}"
+  set_default "x-scheme-handler/http" "${DESKTOP_ID}"
+  set_default "x-scheme-handler/https" "${DESKTOP_ID}"
+  echo -e "${GREEN}[OK] Default browser -> google-chrome-vnc.${RESET}"
 
   echo -e "${CYAN}[*] Cloning blockassist repo...${RESET}"
   cd "$HOME"
@@ -192,7 +235,7 @@ EOF
   # add pyenv to current shell and persist to .bashrc
   export PATH="$HOME/.pyenv/bin:$PATH"
   eval "$("$HOME/.pyenv/bin/pyenv" init -)"
-  eval "$("$HOME/.pyenv/bin/pyenv" virtualenv-init -)"
+  eval "$("$HOME/.pyenv/bin/pyenv" virtualenv-init -)" || true
   if ! grep -q 'pyenv init' "$HOME/.bashrc" 2>/dev/null; then
     {
       echo 'export PATH="$HOME/.pyenv/bin:$PATH"'
@@ -300,24 +343,18 @@ stop_vnc_server(){
   echo -e "${CYAN}Найдены сеансы:${RESET} ${displays}"
   for d in $displays; do
     echo -e "${CYAN}[*] Останавливаю ${d}...${RESET}"
-    # Мягко: стандартный kill
     "$VNC_BIN" -kill "$d" >/dev/null 2>&1 || true
 
-    # Жёстко: если что-то живо — добиваем Xvnc по дисплею и чистим ресурсы
     local num="${d#:}"
-    # TERM, потом KILL на всякий случай
     pkill -TERM -f "Xvnc.*[: ]${num}\b" 2>/dev/null || true
     sleep 0.5
     pkill -KILL -f "Xvnc.*[: ]${num}\b" 2>/dev/null || true
-    # Грохнем владельцев порта 590<num> и X-сокета, если есть
     fuser -k 590${num}/tcp 2>/dev/null || true
     fuser -k /tmp/.X11-unix/X${num} 2>/dev/null || true
-    # Уберём «застывшие» файлы
     local host; host="$(hostname -s 2>/dev/null || hostname)"
     rm -f "$HOME/.vnc/${host}:${num}.pid" "/tmp/.X${num}-lock" "/tmp/.X11-unix/X${num}" 2>/dev/null || true
   done
 
-  # Проверка: ничего не осталось?
   if "$VNC_BIN" -list 2>/dev/null | grep -qE ':[0-9]+' || pgrep -f 'Xvnc.*:' >/dev/null 2>&1; then
     echo -e "${YELLOW}Часть сеансов всё ещё активна. Проверьте вручную:${RESET}"
     "$VNC_BIN" -list || true
