@@ -102,7 +102,7 @@ Press **Esc** in Minecraft → **Enter** in terminal.
 
 ### 14. Model Training
 Takes about **1 hour**.
-
+<img width="1470" height="803" alt="image" src="https://github.com/user-attachments/assets/1c4d13b5-dd7c-49ff-8c38-00da8bfab491" />
 ---
 
 ### 15. Upload Complete
@@ -112,7 +112,6 @@ Check Hugging Face model URL.
 
 ### 16. Check Your Model
 Go to [Hugging Face](https://huggingface.co/).
-<img width="1470" height="803" alt="image" src="https://github.com/user-attachments/assets/1c4d13b5-dd7c-49ff-8c38-00da8bfab491" />
 
 ---
 
@@ -231,6 +230,7 @@ wget -q -O blockassist.sh https://raw.githubusercontent.com/ksydoruk1508/gensyn_
 
 ### 14. Обучение модели
 ~1 час.
+<img width="1470" height="803" alt="image" src="https://github.com/user-attachments/assets/1c4d13b5-dd7c-49ff-8c38-00da8bfab491" />
 
 ---
 
