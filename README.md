@@ -37,7 +37,7 @@ At the end, you will see the **login details** for VNC.
 
 ### 4. Connect to the Server via VNC
 Use the provided VNC login details.  
-Example using **MobaXterm**:  
+Example using [**MobaXterm**](https://mobaxterm.mobatek.net/):  
 1. Click **Session** (top left).  
 2. Select **VNC**.  
 3. Enter your server IP and change the port.  
@@ -160,7 +160,7 @@ wget -q -O blockassist.sh https://raw.githubusercontent.com/ksydoruk1508/gensyn_
 ---
 
 ### 4. Подключитесь через VNC
-Пример через **MobaXterm**:  
+Пример через [**MobaXterm**](https://mobaxterm.mobatek.net/):  
 1. **Session**.  
 2. **VNC**.  
 3. IP и порт.  
