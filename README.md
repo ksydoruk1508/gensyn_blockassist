@@ -5,7 +5,7 @@
 ## 📋 Requirements
 
 **EN:**  
-- **Ubuntu 22.04** (tested on `CPU 16 / RAM 32` at [Hetzner](https://hetzner.cloud/?ref=NfF1b8e27Djj))  
+- **Ubuntu 22.04** (tested on `CPU 16 / RAM 32` at [Hetzner](https://hetzner.cloud/?ref=NfF1b8e27Djj)) You can rent it by the hour.
 - VNC client (e.g. **MobaXterm**, RealVNC, TigerVNC, etc.)  
 - Stable internet connection  
 - Hugging Face account with **Write-enabled access token**  
@@ -139,7 +139,7 @@ Open `gensyn.json` for `eoa`, `trainingId`, and `heid`.
 ## 📋 Требования
 
 **RU:**  
-- **Ubuntu 22.04** (тестировалось на `CPU 16 / RAM 32` в [Hetzner](https://hetzner.cloud/?ref=NfF1b8e27Djj))  
+- **Ubuntu 22.04** (тестировалось на `CPU 16 / RAM 32` в [Hetzner](https://hetzner.cloud/?ref=NfF1b8e27Djj)) Есть возможность арендовать почасово 
 - VNC-клиент (например, **MobaXterm**, RealVNC, TigerVNC и др.)  
 - Стабильное интернет-соединение  
 - Аккаунт Hugging Face с **токеном доступа типа Write**  
