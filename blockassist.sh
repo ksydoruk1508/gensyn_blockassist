@@ -225,7 +225,7 @@ EOF
 
   echo -e "${GREEN}=== Установка завершена / Install complete ===${RESET}"
   echo -e "${YELLOW}Для запуска / To run:${RESET}"
-  echo -e "${GREEN}source ~/.bashrc && cd ~/blockassist && python run.py${RESET}"
+  echo -e "${GREEN}3) Run Block Assist (inside VNC)${RESET}"
 }
 
 # ========= 3) Run Block Assist (inside VNC) =========
