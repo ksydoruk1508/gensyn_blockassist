@@ -111,7 +111,7 @@ Go to [Hugging Face](https://huggingface.co/).
 ---
 
 ### 16. Get Role in Discord
-Open `gensyn.json` for `eoa`, `trainingId`, and `heid`.
+Open your model [Here](https://huggingface.co/), click Files and Versions, then open gensyn.json. There you will find the information required to obtain a role in the project’s Discord — namely: eoa, trainingId, and your Heid
 
 ---
 
@@ -235,7 +235,7 @@ wget -q -O blockassist.sh https://raw.githubusercontent.com/ksydoruk1508/gensyn_
 ---
 
 ### 16. Получите роль в Discord
-Откройте `gensyn.json` → `eoa`, `trainingId`, `heid`.
+Откройте модель [ТУТ](https://huggingface.co/), нажмите Files amd Versions, затем gensyn.json. Там вы найдете необходимое для получения роли в дискорде проекта, а именно: eoa, trainingId и ваш Heid.
 
 ---
 
