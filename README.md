@@ -1,4 +1,4 @@
-# BlockAssist Installation & Usage Guide
+# BlockAssist Installation & Usage Guide | CPU Version via VPS
 
 ## English Version
 
