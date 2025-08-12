@@ -107,7 +107,6 @@ Takes about **1 hour**.
 
 ### 15. Upload Complete
 Check Hugging Face model URL.
-<img width="1470" height="803" alt="image" src="https://github.com/user-attachments/assets/1d3391e1-68f3-42f3-a22a-a596630fba26" />
 
 ---
 
@@ -237,7 +236,6 @@ wget -q -O blockassist.sh https://raw.githubusercontent.com/ksydoruk1508/gensyn_
 
 ### 15. Завершение загрузки
 Проверьте ссылку модели.
-![Uploading image.png…]()
 
 ---
 
